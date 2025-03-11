@@ -7,9 +7,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
     public static final String ERROR_DURING_SAVING_BOOK =
             "Error during saving book -> %s";
@@ -17,10 +19,6 @@ public class BookRepositoryImpl implements BookRepository {
     public static final String ERROR_DURING_RETRIEVING_ALL_BOOKS =
             "Error during retrieving all books.";
     private final EntityManagerFactory factory;
-
-    public BookRepositoryImpl(EntityManagerFactory factory) {
-        this.factory = factory;
-    }
 
     @Override
     public Book save(Book book) {

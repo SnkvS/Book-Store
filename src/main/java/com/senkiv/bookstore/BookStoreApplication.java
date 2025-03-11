@@ -3,6 +3,7 @@ package com.senkiv.bookstore;
 import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.service.BookService;
 import java.math.BigDecimal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,7 @@ public class BookStoreApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(BookService bookService) {
+    CommandLineRunner commandLineRunner(@Autowired BookService bookService) {
         return (String... args) -> {
             var book = new Book();
             book.setTitle("Game of Thrones");
