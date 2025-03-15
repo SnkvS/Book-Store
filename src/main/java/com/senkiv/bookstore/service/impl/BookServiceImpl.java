@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
+    public static final String NO_BOOK_WITH_SUCH_ID =
+            "There is no book with such id -> %s";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
 
@@ -33,6 +35,7 @@ public class BookServiceImpl implements BookService {
     public BookDto findById(Long id) {
         return bookRepository.findById(id)
                 .map(mapper::toDto)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        NO_BOOK_WITH_SUCH_ID.formatted(id)));
     }
 }
