@@ -8,7 +8,6 @@ import com.senkiv.bookstore.repository.BookRepository;
 import com.senkiv.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,13 +42,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto updateById(Long id, CreateBookRequestDto bookDto) {
-        Optional<Book> byId = bookRepository.findById(id);
-        Book book =
-                byId.map(entity -> mapper.update(bookDto, entity))
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                NO_BOOK_WITH_SUCH_ID.formatted(id)));
-        bookRepository.save(book);
-        return mapper.toDto(book);
+        Book byId = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        NO_BOOK_WITH_SUCH_ID.formatted(id)));
+        mapper.update(bookDto, byId);
+        bookRepository.save(byId);
+        return mapper.toDto(byId);
     }
 
     @Override
