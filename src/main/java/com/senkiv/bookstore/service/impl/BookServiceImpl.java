@@ -3,6 +3,7 @@ package com.senkiv.bookstore.service.impl;
 import com.senkiv.bookstore.dto.BookDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.mapper.BookMapper;
+import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.repository.BookRepository;
 import com.senkiv.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
-    public static final String NO_BOOK_WITH_SUCH_ID =
+    private static final String NO_BOOK_WITH_SUCH_ID =
             "There is no book with such id -> %s";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
@@ -37,5 +38,20 @@ public class BookServiceImpl implements BookService {
                 .map(mapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
                         NO_BOOK_WITH_SUCH_ID.formatted(id)));
+    }
+
+    @Override
+    public BookDto updateById(Long id, CreateBookRequestDto bookDto) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        NO_BOOK_WITH_SUCH_ID.formatted(id)));
+        mapper.update(bookDto, book);
+        bookRepository.save(book);
+        return mapper.toDto(book);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
     }
 }
