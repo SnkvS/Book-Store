@@ -49,7 +49,7 @@ public class BookController {
         bookService.deleteById(id);
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     public List<BookDto> searchBooks(@RequestBody BookSearchParametersDto dto) {
         return bookService.searchByParams(dto);
     }

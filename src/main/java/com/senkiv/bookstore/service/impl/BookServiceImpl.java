@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 public class BookServiceImpl implements BookService {
     private static final String NO_BOOK_WITH_SUCH_ID =
             "There is no book with such id -> %s";
-    private static final String NO_BOOK_WITH_PARAMETERS =
-            "There are no books with such parameters -> %s";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
     private final SpecificationProvider<Book> specificationProvider;
@@ -70,9 +68,12 @@ public class BookServiceImpl implements BookService {
                 .map(entry -> specificationProvider.getSpecification(entry.getValue(),
                         entry.getKey()))
                 .reduce(Specification::and);
-        return bookRepository.findAll(resultSpecification.orElseThrow(
-                        () -> new EntityNotFoundException(NO_BOOK_WITH_PARAMETERS.formatted(dto))))
-                .stream().map(mapper::toDto)
-                .toList();
+        return resultSpecification.map(
+                        specification -> bookRepository.findAll(specification)
+                                .stream()
+                                .map(mapper::toDto)
+                                .toList())
+                .orElseGet(() -> bookRepository.findAll().stream().map(mapper::toDto)
+                        .toList());
     }
 }

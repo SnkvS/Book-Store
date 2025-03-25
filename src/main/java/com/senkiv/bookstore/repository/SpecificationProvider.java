@@ -8,6 +8,6 @@ public class SpecificationProvider<T> {
     public Specification<T> getSpecification(String param, String fieldName) {
         return (
                 (root, query, criteriaBuilder) -> criteriaBuilder
-                .like(root.get(fieldName), "%" + param + "%"));
+                .like(criteriaBuilder.lower(root.get(fieldName)), "%" + param.toLowerCase() + "%"));
     }
 }
