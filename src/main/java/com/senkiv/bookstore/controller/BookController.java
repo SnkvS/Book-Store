@@ -1,6 +1,7 @@
 package com.senkiv.bookstore.controller;
 
 import com.senkiv.bookstore.dto.BookDto;
+import com.senkiv.bookstore.dto.BookSearchParametersDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.service.BookService;
 import java.util.List;
@@ -46,5 +47,10 @@ public class BookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
+    }
+
+    @PostMapping("/search")
+    public List<BookDto> searchBooks(@RequestBody BookSearchParametersDto dto) {
+        return bookService.searchByParams(dto);
     }
 }
