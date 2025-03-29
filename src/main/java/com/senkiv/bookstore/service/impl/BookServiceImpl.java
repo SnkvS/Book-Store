@@ -6,13 +6,11 @@ import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.mapper.BookMapper;
 import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.repository.BookRepository;
-import com.senkiv.bookstore.repository.SpecificationProvider;
+import com.senkiv.bookstore.repository.BookSpecificationBuilder;
 import com.senkiv.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +20,7 @@ public class BookServiceImpl implements BookService {
             "There is no book with such id -> %s";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
-    private final SpecificationProvider<Book> specificationProvider;
+    private final BookSpecificationBuilder specificationBuilder;
 
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
@@ -62,18 +60,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> searchByParams(BookSearchParametersDto dto) {
-        Optional<Specification<Book>> resultSpecification = mapper.toMap(dto)
-                .entrySet()
+        return bookRepository.findAll(specificationBuilder.build(dto))
                 .stream()
-                .map(entry -> specificationProvider.getSpecification(entry.getValue(),
-                        entry.getKey()))
-                .reduce(Specification::and);
-        return resultSpecification.map(
-                        specification -> bookRepository.findAll(specification)
-                                .stream()
-                                .map(mapper::toDto)
-                                .toList())
-                .orElseGet(() -> bookRepository.findAll().stream().map(mapper::toDto)
-                        .toList());
+                .map(mapper::toDto)
+                .toList();
     }
 }
