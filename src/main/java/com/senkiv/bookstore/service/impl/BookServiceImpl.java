@@ -1,10 +1,12 @@
 package com.senkiv.bookstore.service.impl;
 
 import com.senkiv.bookstore.dto.BookDto;
+import com.senkiv.bookstore.dto.BookSearchParametersDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.mapper.BookMapper;
 import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.repository.BookRepository;
+import com.senkiv.bookstore.repository.BookSpecificationBuilder;
 import com.senkiv.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -18,6 +20,7 @@ public class BookServiceImpl implements BookService {
             "There is no book with such id -> %s";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
+    private final BookSpecificationBuilder specificationBuilder;
 
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
@@ -53,5 +56,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public List<BookDto> searchByParams(BookSearchParametersDto dto) {
+        return bookRepository.findAll(specificationBuilder.build(dto))
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 }
