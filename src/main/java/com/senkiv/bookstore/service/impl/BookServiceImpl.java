@@ -8,6 +8,7 @@ import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.repository.BookRepository;
 import com.senkiv.bookstore.repository.BookSpecificationBuilder;
 import com.senkiv.bookstore.service.BookService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,19 @@ import org.springframework.stereotype.Service;
 public class BookServiceImpl implements BookService {
     private static final String NO_BOOK_WITH_SUCH_ID =
             "There is no book with such id -> %s";
+    private static final String BOOK_WITH_SUCH_ISBN_ALREADY_EXISTS =
+            "Book with such isbn already exists -> %s.";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
     private final BookSpecificationBuilder specificationBuilder;
 
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
-        return mapper.toDto(bookRepository.save(mapper.toModel(bookDto)));
+        if (!bookRepository.existsBookByIsbn(bookDto.isbn())) {
+            return mapper.toDto(bookRepository.save(mapper.toModel(bookDto)));
+        }
+        throw new EntityExistsException(
+                BOOK_WITH_SUCH_ISBN_ALREADY_EXISTS.formatted(bookDto.isbn()));
     }
 
     @Override
