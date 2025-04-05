@@ -1,6 +1,5 @@
 package com.senkiv.bookstore.exception;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -14,15 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final String STRING = " field did not pass validation.";
-
-    private static String getErrorMessage(ObjectError e) {
-        if (e instanceof FieldError fieldError) {
-            String field = fieldError.getField();
-            return field.replace(field.substring(0, 1), field.substring(0, 1).toUpperCase())
-                    + STRING;
-        }
-        return e.getDefaultMessage();
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
@@ -39,9 +29,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<String> handleEntityExistsException(EntityExistsException ex) {
+    @ExceptionHandler(BookExistsException.class)
+    public ResponseEntity<String> handleEntityExistsException(BookExistsException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleDataProcessingException(DataProcessingException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    private static String getErrorMessage(ObjectError e) {
+        if (e instanceof FieldError fieldError) {
+            String field = fieldError.getField();
+            return field.replace(field.substring(0, 1), field.substring(0, 1).toUpperCase())
+                    + STRING;
+        }
+        return e.getDefaultMessage();
     }
 }
 
