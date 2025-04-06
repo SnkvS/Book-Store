@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private static final String STRING = " field did not pass validation.";
-
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -40,10 +38,10 @@ public class GlobalExceptionHandler {
     }
 
     private static String getErrorMessage(ObjectError e) {
-        if (e instanceof FieldError fieldError) {
-            String field = fieldError.getField();
-            return field.replace(field.substring(0, 1), field.substring(0, 1).toUpperCase())
-                    + STRING;
+        if (e instanceof FieldError) {
+            String field = ((FieldError) e).getField();
+            String message = e.getDefaultMessage();
+            return field + " " + message;
         }
         return e.getDefaultMessage();
     }
