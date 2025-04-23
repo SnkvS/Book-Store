@@ -10,8 +10,10 @@ import com.senkiv.bookstore.repository.BookRepository;
 import com.senkiv.bookstore.repository.BookSpecificationBuilder;
 import com.senkiv.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +26,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper mapper;
     private final BookRepository bookRepository;
     private final BookSpecificationBuilder specificationBuilder;
+    private final SortHandlerMethodArgumentResolverCustomizer sortCustomizer;
 
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
@@ -35,11 +38,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAll() {
-        return bookRepository.findAll()
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+    public Page<BookDto> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(mapper::toDto);
+
     }
 
     @Override
@@ -66,10 +68,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> searchByParams(BookSearchParametersDto dto) {
-        return bookRepository.findAll(specificationBuilder.build(dto))
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+    public Page<BookDto> searchByParams(Pageable pageable, BookSearchParametersDto dto) {
+        return bookRepository.findAll(specificationBuilder.build(dto), pageable)
+                .map(mapper::toDto);
     }
 }
