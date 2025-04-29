@@ -4,6 +4,7 @@ import com.senkiv.bookstore.dto.BookDto;
 import com.senkiv.bookstore.dto.BookSearchParametersDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.service.BookService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,33 +26,40 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
+    @Tag(name = "Get all books", description = "Retrieves all books.")
     @GetMapping
     public Page<BookDto> getAll(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
+    @Tag(name = "Get Book By id", description = "Retrieves a book by it`s id.")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
+    @Tag(name = "Create a book", description = "Creates a book")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
+    @Tag(name = "Update a book", description = "Updates a book by id.")
     @PutMapping(value = "/{id}")
     public BookDto updateBook(@PathVariable Long id,
             @RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.updateById(id, bookDto);
     }
 
+    @Tag(name = "Delete a book", description = "Deletes a book by id.")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
     }
 
+    @Tag(name = "Search for specific book", description = "Retrieves all books that are matching "
+            + "certain criteria.")
     @GetMapping("/search")
     public Page<BookDto> searchBooks(Pageable pageable,
             @RequestBody @Valid BookSearchParametersDto dto) {

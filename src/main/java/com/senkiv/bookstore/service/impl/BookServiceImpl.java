@@ -13,7 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +25,6 @@ public class BookServiceImpl implements BookService {
     private final BookMapper mapper;
     private final BookRepository bookRepository;
     private final BookSpecificationBuilder specificationBuilder;
-    private final SortHandlerMethodArgumentResolverCustomizer sortCustomizer;
 
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
