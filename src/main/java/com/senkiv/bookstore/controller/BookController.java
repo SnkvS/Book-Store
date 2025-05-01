@@ -4,9 +4,11 @@ import com.senkiv.bookstore.dto.BookDto;
 import com.senkiv.bookstore.dto.BookSearchParametersDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,35 +26,44 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
+    @Operation(description = "Retrieves all books.")
     @GetMapping
-    public List<BookDto> getAll() {
-        return bookService.findAll();
+    public Page<BookDto> getAll(Pageable pageable) {
+        return bookService.findAll(pageable);
     }
 
+    @Operation(description = "Retrieves a book by it`s id.")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
+    @Operation(description = "Creates a book")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
+    @Operation(description = "Updates a book by id.")
     @PutMapping(value = "/{id}")
     public BookDto updateBook(@PathVariable Long id,
             @RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.updateById(id, bookDto);
     }
 
+    @Operation(description = "Deletes a book by id.")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
     }
 
+    @Operation(description = "Retrieves all books that are "
+            + "matching "
+            + "certain criteria.")
     @GetMapping("/search")
-    public List<BookDto> searchBooks(@RequestBody @Valid BookSearchParametersDto dto) {
-        return bookService.searchByParams(dto);
+    public Page<BookDto> searchBooks(Pageable pageable,
+            @RequestBody @Valid BookSearchParametersDto dto) {
+        return bookService.searchByParams(pageable, dto);
     }
 }
