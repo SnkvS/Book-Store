@@ -6,8 +6,6 @@ import com.senkiv.bookstore.exception.RegistrationException;
 import com.senkiv.bookstore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> register(
+    @PostMapping("/registration")
+    public UserResponseDto register(
             @RequestBody @Valid UserRegistrationRequestDto dto) throws RegistrationException {
-        return new ResponseEntity<>(userService.register(dto), HttpStatus.OK);
+        return userService.register(dto);
     }
 }
