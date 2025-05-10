@@ -1,11 +1,11 @@
 package com.senkiv.bookstore.dto;
 
-import com.senkiv.bookstore.validation.annotation.PasswordMatch;
+import com.senkiv.bookstore.validation.annotation.FieldMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-@PasswordMatch
+@FieldMatch(first = "password", second = "repeatPassword")
 public record UserRegistrationRequestDto(
         @Email
         @NotBlank

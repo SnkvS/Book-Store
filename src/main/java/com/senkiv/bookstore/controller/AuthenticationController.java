@@ -4,6 +4,7 @@ import com.senkiv.bookstore.dto.UserRegistrationRequestDto;
 import com.senkiv.bookstore.dto.UserResponseDto;
 import com.senkiv.bookstore.exception.RegistrationException;
 import com.senkiv.bookstore.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/registration")
+    @Operation(description = "Register new user.")
     public UserResponseDto register(
             @RequestBody @Valid UserRegistrationRequestDto dto) throws RegistrationException {
         return userService.register(dto);

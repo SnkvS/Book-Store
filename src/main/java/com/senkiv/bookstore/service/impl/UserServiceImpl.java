@@ -14,17 +14,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final String USER_WITH_SUCH_EMAIL_ALREADY_EXISTS =
-            "User with such email already exists.";
+            "User with such email already exists -> %s";
     private final UserRepository userRepository;
     private final UserMapper mapper;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto dto) throws RegistrationException {
-        if (!userRepository.existsByEmail(dto.email())) {
-            User model = mapper.toModel(dto);
-            return mapper.toDto(userRepository.save(model));
-        } else {
-            throw new RegistrationException(USER_WITH_SUCH_EMAIL_ALREADY_EXISTS);
+        if (userRepository.existsByEmail(dto.email())) {
+            throw new RegistrationException(
+                    USER_WITH_SUCH_EMAIL_ALREADY_EXISTS.formatted(dto.email()));
         }
+        User model = mapper.toModel(dto);
+        return mapper.toDto(userRepository.save(model));
     }
 }
