@@ -9,7 +9,8 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Object> {
-    public static final String COULD_NOT_ACCESS_FIELD_ON_CLASS = "Could not access field '%s' on class '%s'";
+    public static final String COULD_NOT_ACCESS_FIELD_ON_CLASS =
+            "Could not access field '%s' on class '%s'";
     private String firstFieldName;
     private String secondFieldName;
 
