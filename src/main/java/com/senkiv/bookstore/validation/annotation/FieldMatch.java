@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface FieldMatch {
 
-    String PASSWORDS_ARE_NOT_MATCHING = "Required field are not matching";
+    String FIELDS_ARE_NOT_MATCHING = "Required field are not matching";
 
-    String message() default PASSWORDS_ARE_NOT_MATCHING;
+    String message() default FIELDS_ARE_NOT_MATCHING;
 
     Class<?>[] groups() default {};
 
