@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Serhii Senkiv
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  type: BIGINT
+              - column:
+                  name: email
+                  constraints:
+                    nullable: false
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  constraints:
+                    nullable: false
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  constraints:
+                    nullable: false
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  constraints:
+                    nullable: false
+                  type: VARCHAR(255)
+              - column:
+                  name: shipping_address
+                  type: VARCHAR(255)

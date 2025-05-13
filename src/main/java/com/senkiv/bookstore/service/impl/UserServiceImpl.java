@@ -1,0 +1,30 @@
+package com.senkiv.bookstore.service.impl;
+
+import com.senkiv.bookstore.dto.UserRegistrationRequestDto;
+import com.senkiv.bookstore.dto.UserResponseDto;
+import com.senkiv.bookstore.exception.RegistrationException;
+import com.senkiv.bookstore.mapper.UserMapper;
+import com.senkiv.bookstore.model.User;
+import com.senkiv.bookstore.repository.UserRepository;
+import com.senkiv.bookstore.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private static final String USER_WITH_SUCH_EMAIL_ALREADY_EXISTS =
+            "User with such email already exists -> %s";
+    private final UserRepository userRepository;
+    private final UserMapper mapper;
+
+    @Override
+    public UserResponseDto register(UserRegistrationRequestDto dto) throws RegistrationException {
+        if (userRepository.existsByEmail(dto.email())) {
+            throw new RegistrationException(
+                    USER_WITH_SUCH_EMAIL_ALREADY_EXISTS.formatted(dto.email()));
+        }
+        User model = mapper.toModel(dto);
+        return mapper.toDto(userRepository.save(model));
+    }
+}
