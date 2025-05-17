@@ -45,23 +45,17 @@ databaseChangeLog:
               - column:
                   name: password
                   value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
-        - insert:
-            tableName: users_roles
-            columns:
-              - column:
-                  name: user_id
-                  value: 1
-              - column:
-                  name: role_id
-                  value: 1
-        - insert:
-            tableName: users_roles
-            columns:
-              - column:
-                  name: user_id
-                  value: 2
-              - column:
-                  name: role_id
-                  value: 2
+        - sql:
+            sql: >
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.id, r.id
+              FROM users u, roles r
+              WHERE u.email = 'john.doe@gmail.com' AND r.role_name = 'ADMIN';
+        - sql:
+            sql: >
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.id, r.id
+              FROM users u, roles r
+              WHERE u.email = 'alice.doe@gmail.com' AND r.role_name = 'USER';
 
 
