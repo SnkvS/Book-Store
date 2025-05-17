@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Serhii Senkiv
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_name
+                  value: ADMIN
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_name
+                  value: USER
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: first_name
+                  value: John
+              - column:
+                  name: last_name
+                  value: Doe
+              - column:
+                  name: email
+                  value: john.doe@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: first_name
+                  value: Alice
+              - column:
+                  name: last_name
+                  value: Doe
+              - column:
+                  name: email
+                  value: alice.doe@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: role_id
+                  value: 2
+
+

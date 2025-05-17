@@ -62,7 +62,8 @@ public class BookController {
             + "matching "
             + "certain criteria.")
     @GetMapping("/search")
-    public Page<BookDto> searchBooks(Pageable pageable,
+    public Page<BookDto> searchBooks(
+            Pageable pageable,
             @RequestBody @Valid BookSearchParametersDto dto) {
         return bookService.searchByParams(pageable, dto);
     }
