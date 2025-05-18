@@ -8,13 +8,12 @@ import com.senkiv.bookstore.mapper.BookMapper;
 import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.repository.BookRepository;
 import com.senkiv.bookstore.repository.BookSpecificationBuilder;
-import com.senkiv.bookstore.security.annotation.IsAdmin;
-import com.senkiv.bookstore.security.annotation.IsAuthenticated;
 import com.senkiv.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +27,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookSpecificationBuilder specificationBuilder;
 
-    @IsAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
         if (!bookRepository.existsBookByIsbn(bookDto.isbn())) {
@@ -38,7 +37,7 @@ public class BookServiceImpl implements BookService {
                 BOOK_WITH_SUCH_ISBN_ALREADY_EXISTS.formatted(bookDto.isbn()));
     }
 
-    @IsAuthenticated
+    @PreAuthorize("isAuthenticated()")
     @Override
     public Page<BookDto> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable)
@@ -46,7 +45,7 @@ public class BookServiceImpl implements BookService {
 
     }
 
-    @IsAuthenticated
+    @PreAuthorize("isAuthenticated()")
     @Override
     public BookDto findById(Long id) {
         return bookRepository.findById(id)
@@ -55,7 +54,7 @@ public class BookServiceImpl implements BookService {
                         NO_BOOK_WITH_SUCH_ID.formatted(id)));
     }
 
-    @IsAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public BookDto updateById(Long id, CreateBookRequestDto bookDto) {
         Book book = bookRepository.findById(id)
@@ -66,13 +65,13 @@ public class BookServiceImpl implements BookService {
         return mapper.toDto(book);
     }
 
-    @IsAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }
 
-    @IsAuthenticated
+    @PreAuthorize("isAuthenticated()")
     @Override
     public Page<BookDto> searchByParams(Pageable pageable, BookSearchParametersDto dto) {
         return bookRepository.findAll(specificationBuilder.build(dto), pageable)

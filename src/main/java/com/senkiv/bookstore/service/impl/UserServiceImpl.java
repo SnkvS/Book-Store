@@ -9,8 +9,11 @@ import com.senkiv.bookstore.model.User;
 import com.senkiv.bookstore.repository.RoleRepository;
 import com.senkiv.bookstore.repository.UserRepository;
 import com.senkiv.bookstore.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService {
             "Cannot assign default role to user.";
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
     private final UserMapper mapper;
 
     @Transactional
@@ -32,13 +36,9 @@ public class UserServiceImpl implements UserService {
                     USER_WITH_SUCH_EMAIL_ALREADY_EXISTS.formatted(dto.email()));
         }
         User model = mapper.toModel(dto);
-        if (!roleRepository.existsRoleByRoleName(RoleName.USER)) {
-            throw new RegistrationException(
-                    "Cannot assign role (%s) to user (%s)".formatted(RoleName.USER, model));
-        }
-        model.getRoles().add(roleRepository.findByRoleName(RoleName.USER)
-                .orElseThrow(() -> new RegistrationException(
-                        CANNOT_ASSIGN_DEFAULT_ROLE_TO_USER)));
+        model.setPassword(encoder.encode(model.getPassword()));
+        model.setRoles(Set.of(roleRepository.findByRoleName(RoleName.USER).orElseThrow(
+                () -> new EntityNotFoundException(CANNOT_ASSIGN_DEFAULT_ROLE_TO_USER))));
         return mapper.toDto(userRepository.save(model));
     }
 }
