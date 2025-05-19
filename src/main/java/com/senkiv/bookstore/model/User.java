@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,6 +21,10 @@ import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@NamedEntityGraph(
+        name = "user-with-roles-graph",
+        attributeNodes = {@NamedAttributeNode("roles")}
+)
 @Entity
 @Table(name = "users")
 @Getter

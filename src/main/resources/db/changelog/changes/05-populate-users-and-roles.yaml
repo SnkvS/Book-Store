@@ -57,5 +57,3 @@ databaseChangeLog:
               SELECT u.id, r.id
               FROM users u, roles r
               WHERE u.email = 'alice.doe@gmail.com' AND r.role_name = 'USER';
-
-
