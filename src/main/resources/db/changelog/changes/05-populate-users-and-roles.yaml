@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Serhii Senkiv
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_name
+                  value: ADMIN
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_name
+                  value: USER
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: first_name
+                  value: John
+              - column:
+                  name: last_name
+                  value: Doe
+              - column:
+                  name: email
+                  value: john.doe@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: first_name
+                  value: Alice
+              - column:
+                  name: last_name
+                  value: Doe
+              - column:
+                  name: email
+                  value: alice.doe@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
+        - sql:
+            sql: >
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.id, r.id
+              FROM users u, roles r
+              WHERE u.email = 'john.doe@gmail.com' AND r.role_name = 'ADMIN';
+        - sql:
+            sql: >
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.id, r.id
+              FROM users u, roles r
+              WHERE u.email = 'alice.doe@gmail.com' AND r.role_name = 'USER';
