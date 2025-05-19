@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,24 +27,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(description = "Retrieves all books.")
     @GetMapping
     public Page<BookDto> getAll(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(description = "Retrieves a book by it`s id.")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Creates a book")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Updates a book by id.")
     @PutMapping(value = "/{id}")
     public BookDto updateBook(@PathVariable Long id,
@@ -51,6 +56,7 @@ public class BookController {
         return bookService.updateById(id, bookDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Deletes a book by id.")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -58,11 +64,13 @@ public class BookController {
         bookService.deleteById(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Operation(description = "Retrieves all books that are "
             + "matching "
             + "certain criteria.")
     @GetMapping("/search")
-    public Page<BookDto> searchBooks(Pageable pageable,
+    public Page<BookDto> searchBooks(
+            Pageable pageable,
             @RequestBody @Valid BookSearchParametersDto dto) {
         return bookService.searchByParams(pageable, dto);
     }

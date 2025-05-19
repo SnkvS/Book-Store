@@ -20,10 +20,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(exception = MethodArgumentNotValidException.class)
     public ResponseEntity<List<String>> handleConstraintViolationException(
             MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult()
-                .getAllErrors().stream()
-                .map(GlobalExceptionHandler::getErrorMessage)
-                .toList();
+        List<String> errors = ex.getBindingResult().getAllErrors().stream()
+                .map(GlobalExceptionHandler::getErrorMessage).toList();
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
