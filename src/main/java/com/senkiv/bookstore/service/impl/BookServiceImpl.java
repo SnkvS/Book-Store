@@ -1,7 +1,6 @@
 package com.senkiv.bookstore.service.impl;
 
 import com.senkiv.bookstore.dto.BookDto;
-import com.senkiv.bookstore.dto.BookDtoWithoutCategories;
 import com.senkiv.bookstore.dto.BookSearchParametersDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.exception.BookExistsException;
@@ -70,11 +69,5 @@ public class BookServiceImpl implements BookService {
     public Page<BookDto> searchByParams(Pageable pageable, BookSearchParametersDto dto) {
         return bookRepository.findAll(specificationBuilder.build(dto), pageable)
                 .map(mapper::toDto);
-    }
-
-    @Override
-    public Page<BookDtoWithoutCategories> searchByCategories(Pageable pageable, Long categoryId) {
-        return bookRepository.findAllByCategory(pageable, categoryId)
-                .map(mapper::toDtoWithoutCategories);
     }
 }

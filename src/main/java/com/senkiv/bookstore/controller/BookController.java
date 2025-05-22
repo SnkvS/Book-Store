@@ -5,7 +5,6 @@ import com.senkiv.bookstore.dto.BookSearchParametersDto;
 import com.senkiv.bookstore.dto.CreateBookRequestDto;
 import com.senkiv.bookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Book API")
 @RestController
 @RequestMapping(value = "/books")
 @RequiredArgsConstructor
