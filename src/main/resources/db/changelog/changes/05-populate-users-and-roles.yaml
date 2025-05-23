@@ -29,7 +29,7 @@ databaseChangeLog:
                   value: john.doe@gmail.com
               - column:
                   name: password
-                  value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
+                  value: $2a$12$GuAA0J69w5NUP04zSYi5Lu68guxX8.sAc8gUfuF.I6jK9SIu74k6m
         - insert:
             tableName: users
             columns:
@@ -44,7 +44,7 @@ databaseChangeLog:
                   value: alice.doe@gmail.com
               - column:
                   name: password
-                  value: $2a$12$mxmzykO9PRirNzOojF5EcOx7Njx/bbkprRnHvlxakgSck.IhNVhJa
+                  value: $2a$12$GuAA0J69w5NUP04zSYi5Lu68guxX8.sAc8gUfuF.I6jK9SIu74k6m
         - sql:
             sql: >
               INSERT INTO users_roles (user_id, role_id)
