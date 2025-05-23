@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Category API")
@@ -32,6 +34,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Creates a category.")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CategoryResponseDto createCategory(@RequestBody @Valid CategoryRequestDto requestDto) {
         return categoryService.save(requestDto);
     }
@@ -52,7 +55,7 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Updates category by it`s id.")
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
     public CategoryResponseDto updateCategory(@RequestBody @Valid CategoryRequestDto dto,
             @PathVariable Long id) {
         return categoryService.updateById(id, dto);
@@ -60,14 +63,15 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Deletes category by it`s id.")
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
     }
 
     @PreAuthorize("isAuthenticated()")
     @Operation(description = "Retrieves books by specific category.")
-    @GetMapping(value = "/{id}/books")
+    @GetMapping("/{id}/books")
     public Page<BookDtoWithoutCategories> getBooksByCategoryId(@PathVariable Long id,
             Pageable pageable) {
         return bookService.searchByCategories(pageable, id);

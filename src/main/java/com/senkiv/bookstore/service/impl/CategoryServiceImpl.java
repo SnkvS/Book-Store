@@ -4,12 +4,14 @@ import com.senkiv.bookstore.dto.CategoryRequestDto;
 import com.senkiv.bookstore.dto.CategoryResponseDto;
 import com.senkiv.bookstore.exception.CategoryExistsException;
 import com.senkiv.bookstore.mapper.CategoryMapper;
+import com.senkiv.bookstore.model.Book;
 import com.senkiv.bookstore.model.Category;
+import com.senkiv.bookstore.repository.BookRepository;
 import com.senkiv.bookstore.repository.CategoryRepository;
 import com.senkiv.bookstore.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,14 +26,16 @@ public class CategoryServiceImpl implements CategoryService {
             "There is no category with such id -> %s.";
     private final CategoryRepository categoryRepository;
     private final CategoryMapper mapper;
+    private final BookRepository bookRepository;
 
     @Override
     public CategoryResponseDto save(CategoryRequestDto dto) {
-        if (!categoryRepository.existsByName(dto.name())) {
-            return mapper.toDto(categoryRepository.save(mapper.toModel(dto)));
+        if (categoryRepository.existsByName(dto.name())) {
+            throw new CategoryExistsException(
+                    CATEGORY_WITH_NAME_S_ALREADY_EXISTS.formatted(dto.name()));
         }
-        throw new CategoryExistsException(
-                CATEGORY_WITH_NAME_S_ALREADY_EXISTS.formatted(dto.name()));
+
+        return mapper.toDto(categoryRepository.save(mapper.toModel(dto)));
     }
 
     @Override
@@ -59,12 +63,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void deleteById(Long id) {
-        Optional<Category> categoryById = categoryRepository.findCategoryById(id);
-        Category category = categoryById.orElseThrow(
-                () -> new EntityNotFoundException(
+        //remove all relationships to the entity that should be deleted
+        Category category = categoryRepository.findCategoryById(id)
+                .orElseThrow(() -> new CategoryExistsException(
                         THERE_IS_NO_CATEGORY_WITH_SUCH_ID_D.formatted(id)));
-        category.getBooks().forEach(book -> book.getCategories().remove(category));
-        category.getBooks().clear();
+        List<Book> booksWithCategory = bookRepository.findByCategoriesId(id);
+        booksWithCategory.forEach((book) -> {
+            book.getCategories().remove(category);
+        });
+        bookRepository.saveAll(booksWithCategory);
         categoryRepository.deleteById(id);
     }
 }
+

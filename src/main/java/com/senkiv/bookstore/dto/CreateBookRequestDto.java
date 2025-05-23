@@ -1,6 +1,7 @@
 package com.senkiv.bookstore.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Set;
@@ -10,5 +11,5 @@ public record CreateBookRequestDto(@NotBlank String title, @NotBlank String auth
                                    @NotBlank @ISBN String isbn,
                                    @Positive BigDecimal price,
                                    String description, String coverImage,
-                                   Set<Long> categories) {
+                                   @NotEmpty Set<Long> categories) {
 }
