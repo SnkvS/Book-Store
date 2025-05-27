@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     Set<CartItem> findCartItemByShoppingCartId(Long id);
-
-    boolean existsCartItemByShoppingCartIdAndBookId(Long shoppingCartId, Long bookId);
 }

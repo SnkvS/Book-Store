@@ -34,10 +34,3 @@ databaseChangeLog:
                   type: integer
                   constraints:
                     nullable: false
-
-
-
-
-
-
-
