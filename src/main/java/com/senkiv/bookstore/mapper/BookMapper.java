@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
@@ -37,4 +38,9 @@ public interface BookMapper {
     }
 
     BookDtoWithoutCategories toDtoWithoutCategories(Book model);
+
+    @Named("idFromBook")
+    default Long idFromBook(Book book) {
+        return book.getId();
+    }
 }
