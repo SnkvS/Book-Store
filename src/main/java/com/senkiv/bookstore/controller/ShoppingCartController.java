@@ -34,8 +34,7 @@ public class ShoppingCartController {
     @Operation(description = "Retrieves user`s shopping cart.")
     @GetMapping
     public ShoppingCartResponseDto getCart(@AuthenticationPrincipal UserDetails userDetails) {
-        User authenticatedUser = getUserFromDetails(userDetails);
-        return shoppingCartService.getUsersCart(authenticatedUser.getId());
+        return shoppingCartService.getUsersCart(getUserFromDetails(userDetails));
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -45,8 +44,7 @@ public class ShoppingCartController {
     public ShoppingCartResponseDto addBook(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody @Valid CartItemRequestDto dto) {
-        User authenticatedUser = getUserFromDetails(userDetails);
-        return shoppingCartService.addBookToCart(authenticatedUser.getId(), dto);
+        return shoppingCartService.addBookToCart(getUserFromDetails(userDetails), dto);
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -56,8 +54,7 @@ public class ShoppingCartController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long itemId,
             @RequestBody @Valid CartItemUpdateQuantityDto dto) {
-        User authenticatedUser = getUserFromDetails(userDetails);
-        return shoppingCartService.updateQuantity(authenticatedUser.getId(), itemId, dto);
+        return shoppingCartService.updateQuantity(getUserFromDetails(userDetails), itemId, dto);
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -67,11 +64,11 @@ public class ShoppingCartController {
     public void delete(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long itemId) {
-        User authenticatedUser = getUserFromDetails(userDetails);
-        shoppingCartService.deleteCartItem(authenticatedUser.getId(), itemId);
+        shoppingCartService.deleteCartItem(getUserFromDetails(userDetails), itemId);
     }
 
-    private User getUserFromDetails(UserDetails userDetails) {
-        return (User) userDetails;
+    private Long getUserFromDetails(UserDetails userDetails) {
+        User authenticatedUser = (User) userDetails;
+        return authenticatedUser.getId();
     }
 }

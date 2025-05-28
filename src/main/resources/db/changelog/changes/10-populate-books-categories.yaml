@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: 10
       author: Serhii Senkiv
+      runAlways: false
       changes:
         # Populate categories
         - insert:

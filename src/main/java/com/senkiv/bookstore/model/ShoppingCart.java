@@ -3,6 +3,7 @@ package com.senkiv.bookstore.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -25,14 +26,17 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @Setter
 @NamedEntityGraph(
-        name = "cart-with-items",
-        attributeNodes = @NamedAttributeNode(value = "cartItems")
+        name = "cart-with-items-and-user",
+        attributeNodes = {
+                @NamedAttributeNode(value = "cartItems"),
+                @NamedAttributeNode(value = "user")
+        }
 )
 public class ShoppingCart {
     @Id
     private Long id;
     @MapsId
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", nullable = false)
     private User user;
     @Column(nullable = false, columnDefinition = "TINYINT")
