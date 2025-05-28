@@ -1,0 +1,163 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10
+      author: Serhii Senkiv
+      changes:
+        # Populate categories
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: Fiction
+              - column:
+                  name: description
+                  value: Fictional literature and novels
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: Science
+              - column:
+                  name: description
+                  value: Scientific books and research
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: Programming
+              - column:
+                  name: description
+                  value: Books about programming and software development
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        # Populate books
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: Clean Code
+              - column:
+                  name: author
+                  value: Robert C. Martin
+              - column:
+                  name: isbn
+                  value: 9780132350884
+              - column:
+                  name: price
+                  value: 39.99
+              - column:
+                  name: description
+                  value: A handbook of agile software craftsmanship
+              - column:
+                  name: cover_image
+                  value: https://example.com/clean-code.jpg
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: The Pragmatic Programmer
+              - column:
+                  name: author
+                  value: Andrew Hunt, David Thomas
+              - column:
+                  name: isbn
+                  value: 9780201616224
+              - column:
+                  name: price
+                  value: 44.99
+              - column:
+                  name: description
+                  value: Your journey to mastery
+              - column:
+                  name: cover_image
+                  value: https://example.com/pragmatic-programmer.jpg
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: 1984
+              - column:
+                  name: author
+                  value: George Orwell
+              - column:
+                  name: isbn
+                  value: 9780451524935
+              - column:
+                  name: price
+                  value: 12.99
+              - column:
+                  name: description
+                  value: A dystopian novel by English novelist George Orwell
+              - column:
+                  name: cover_image
+                  value: https://example.com/1984.jpg
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        # Link books to categories
+        - sql:
+            sql: >
+              INSERT INTO books_categories (book_id, category_id)
+              SELECT b.id, c.id
+              FROM books b, categories c
+              WHERE b.title = 'Clean Code' AND c.name = 'Programming';
+        - sql:
+            sql: >
+              INSERT INTO books_categories (book_id, category_id)
+              SELECT b.id, c.id
+              FROM books b, categories c
+              WHERE b.title = 'The Pragmatic Programmer' AND c.name = 'Programming';
+        - sql:
+            sql: >
+              INSERT INTO books_categories (book_id, category_id)
+              SELECT b.id, c.id
+              FROM books b, categories c
+              WHERE b.title = '1984' AND c.name = 'Fiction';
+
+        # Create shopping carts for existing users
+        - sql:
+            sql: >
+              INSERT INTO shopping_carts (id, is_deleted)
+              SELECT u.id, false
+              FROM users u
+              WHERE u.email IN ('john.doe@gmail.com', 'alice.doe@gmail.com')
+              AND NOT EXISTS (SELECT 1 FROM shopping_carts sc WHERE sc.id = u.id);
+
+        # Add cart items
+        - sql:
+            sql: >
+              INSERT INTO cart_items (shopping_cart_id, book_id, quantity, is_deleted)
+              SELECT sc.id, b.id, 2, false
+              FROM shopping_carts sc
+              JOIN users u ON sc.id = u.id
+              JOIN books b ON b.title = 'Clean Code'
+              WHERE u.email = 'john.doe@gmail.com';
+        - sql:
+            sql: >
+              INSERT INTO cart_items (shopping_cart_id, book_id, quantity, is_deleted)
+              SELECT sc.id, b.id, 1, false
+              FROM shopping_carts sc
+              JOIN users u ON sc.id = u.id
+              JOIN books b ON b.title = '1984'
+              WHERE u.email = 'alice.doe@gmail.com';
