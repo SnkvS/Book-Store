@@ -1,7 +1,6 @@
 package com.senkiv.bookstore.controller;
 
 import com.senkiv.bookstore.dto.CartItemRequestDto;
-import com.senkiv.bookstore.dto.CartItemResponseDto;
 import com.senkiv.bookstore.dto.CartItemUpdateQuantityDto;
 import com.senkiv.bookstore.dto.ShoppingCartResponseDto;
 import com.senkiv.bookstore.model.User;
@@ -43,7 +42,7 @@ public class ShoppingCartController {
     @Operation(description = "Adds new book to shopping cart.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CartItemResponseDto addBook(
+    public ShoppingCartResponseDto addBook(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody @Valid CartItemRequestDto dto) {
         User authenticatedUser = getUserFromDetails(userDetails);
@@ -53,7 +52,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('USER')")
     @Operation(description = "Updates item that is already in shoping cart.")
     @PutMapping("/{itemId}")
-    public CartItemResponseDto updateItemQuantity(
+    public ShoppingCartResponseDto updateItemQuantity(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long itemId,
             @RequestBody @Valid CartItemUpdateQuantityDto dto) {
