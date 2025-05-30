@@ -40,21 +40,21 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
     private User user;
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.CREATED;
-    @Column(name = "total", nullable = false)
+    private OrderStatus status = OrderStatus.CREATED;
+    @Column(nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
     @CreationTimestamp
-    @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate = LocalDateTime.now();
-    @Column(name = "shipping_address", nullable = false)
+    @Column(nullable = false)
+    private LocalDateTime orderDate;
+    @Column(nullable = false)
     private String shippingAddress;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order",
+    @OneToMany(mappedBy = "order",
             cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
-    @Column(name = "is_deleted", columnDefinition = "TINYINT", nullable = false)
+    @Column(columnDefinition = "TINYINT", nullable = false)
     private boolean isDeleted;
 }

@@ -15,7 +15,6 @@ import com.senkiv.bookstore.repository.OrderItemRepository;
 import com.senkiv.bookstore.repository.OrderRepository;
 import com.senkiv.bookstore.repository.ShoppingCartRepository;
 import com.senkiv.bookstore.service.OrderService;
-import com.senkiv.bookstore.service.ShoppingCartService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
@@ -45,12 +44,12 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartRepository shoppingCartRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
-    private final ShoppingCartService shoppingCartService;
 
+    @Override
     public OrderResponseDto createOrder(Long userId, OrderRequestDto orderRequestDto) {
         ShoppingCart shoppingCart = getShoppingCart(userId);
         User owner = shoppingCart.getUser();
-        if (shoppingCartService.isCartEmpty(shoppingCart)) {
+        if (shoppingCart.isEmpty()) {
             throw new OrderProcessingException(EMPTY_CART_MESSAGE);
         }
         Order order = createEmptyOrder(owner);
@@ -59,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(orderItems);
         order.setTotal(calculateTotalPrice(order));
         orderRepository.save(order);
-        shoppingCartService.clearShoppingCart(shoppingCart);
+        shoppingCart.clearShoppingCart(shoppingCart);
         return orderMapper.toDto(order);
     }
 
@@ -80,7 +79,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderItemResponseDto getSpecificItem(Long itemId, Long orderId, Long userId) {
-        return orderItemRepository.findByIdAndOrderId(itemId, orderId).map(orderItemMapper::toDto)
+        return orderItemRepository.findByIdAndOrderIdAndOrderUserId(itemId, orderId, userId)
+                .map(orderItemMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
                         NO_ITEM_IN_ORDER_MESSAGE.formatted(itemId,
                                 orderId)));
@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(
                         () -> new EntityNotFoundException(NO_ORDER_WITH_SUCH_ID.formatted(orderId
                         )));
-        order.setOrderStatus(dto.orderStatus());
+        order.setStatus(dto.orderStatus());
         return orderMapper.toDto(order);
     }
 

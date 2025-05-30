@@ -26,15 +26,15 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Order order;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Book book;
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable = false)
     private int quantity;
-    @Column(name = "price", nullable = false)
+    @Column(nullable = false)
     private BigDecimal price;
-    @Column(name = "is_deleted", columnDefinition = "TINYINT", nullable = false)
+    @Column(columnDefinition = "TINYINT", nullable = false)
     private boolean isDeleted;
 }
