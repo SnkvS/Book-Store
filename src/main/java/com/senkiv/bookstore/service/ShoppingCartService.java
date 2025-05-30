@@ -18,7 +18,14 @@ public interface ShoppingCartService {
 
     void createUsersCart(User user);
 
-    static boolean isCartEmpty(ShoppingCart shoppingCart) {
+    default void clearShoppingCart(ShoppingCart shoppingCart) {
+        shoppingCart.getCartItems()
+                .forEach(item -> item.setShoppingCart(null));
+        shoppingCart.getCartItems().clear();
+
+    }
+
+    default boolean isCartEmpty(ShoppingCart shoppingCart) {
         return shoppingCart.getCartItems().isEmpty();
     }
 }

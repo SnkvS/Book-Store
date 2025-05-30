@@ -87,7 +87,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCartRepository.save(shoppingCart);
     }
 
-    protected ShoppingCart getUsersShoppingCart(Long userId) {
+    private ShoppingCart getUsersShoppingCart(Long userId) {
         return shoppingCartRepository.findShoppingCartByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         SHOPPING_CART_INIT_ERROR_MSG.formatted(userId)));

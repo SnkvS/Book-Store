@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -46,6 +47,7 @@ public class Order {
     private OrderStatus orderStatus = OrderStatus.CREATED;
     @Column(name = "total", nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
+    @CreationTimestamp
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate = LocalDateTime.now();
     @Column(name = "shipping_address", nullable = false)
