@@ -43,4 +43,14 @@ public class ShoppingCart {
     private boolean isDeleted;
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
+
+    public void clearShoppingCart(ShoppingCart shoppingCart) {
+        shoppingCart.getCartItems()
+                .forEach(item -> item.setShoppingCart(null));
+        shoppingCart.getCartItems().clear();
+    }
+
+    public boolean isEmpty() {
+        return cartItems.isEmpty();
+    }
 }

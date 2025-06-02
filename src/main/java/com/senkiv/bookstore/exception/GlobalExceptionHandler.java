@@ -45,6 +45,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(exception = OrderProcessingException.class)
+    public ResponseEntity<String> handleOrderProcessingException(OrderProcessingException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     private static String getErrorMessage(ObjectError e) {
         if (e instanceof FieldError) {
             String field = ((FieldError) e).getField();
@@ -54,4 +59,3 @@ public class GlobalExceptionHandler {
         return e.getDefaultMessage();
     }
 }
-
