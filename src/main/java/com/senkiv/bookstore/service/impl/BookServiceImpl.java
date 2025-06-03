@@ -40,7 +40,6 @@ public class BookServiceImpl implements BookService {
     public Page<BookDto> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable)
                 .map(mapper::toDto);
-
     }
 
     @Override
