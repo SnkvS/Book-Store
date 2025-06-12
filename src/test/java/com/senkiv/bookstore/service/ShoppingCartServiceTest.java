@@ -145,15 +145,15 @@ class ShoppingCartServiceTest {
     @Test
     @DisplayName("Add new book to cart creates new cart item")
     void addBookToCart_NewBook_CreatesNewCartItem() {
+        CartItem newCartItem = new CartItem();
         Book newBook = new Book();
         newBook.setId(2L);
-        CartItemRequestDto newBookDto = new CartItemRequestDto(2L, QUANTITY);
-        CartItem newCartItem = new CartItem();
         newCartItem.setBook(newBook);
         newCartItem.setQuantity(QUANTITY);
         when(shoppingCartRepository.findShoppingCartByUserId(USER_ID)).thenReturn(
                 Optional.of(shoppingCart));
         when(bookRepository.findById(2L)).thenReturn(Optional.of(newBook));
+        CartItemRequestDto newBookDto = new CartItemRequestDto(2L, QUANTITY);
         when(cartItemMapper.toModel(newBookDto)).thenReturn(newCartItem);
         when(cartItemRepository.save(newCartItem)).thenReturn(newCartItem);
         when(shoppingCartMapper.toDto(shoppingCart)).thenReturn(shoppingCartResponseDto);
